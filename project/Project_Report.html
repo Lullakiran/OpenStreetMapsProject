@@ -182,10 +182,28 @@ In the conclusion section, I explain why such a situation happens.
 { "_id" : "Ulubey Sokak", "count" : 15 }
 { "_id" : "Yavuzevler Sokak", "count" : 15 }
 { "_id" : "1598. Caddesi", "count" : 11 }
-
 </pre></code>
 
+<h3>Common Names in Restaurants and Schools</h3>
+I always thought restaurant names in Turkey are somewhat similar. A search in the database showed 3 restaurants have the same name Aspava, which is a very common restaurant name
+in any city. Then I searched the database for the restaurant names that includes Aspava, and there are 8 restaurants having Aspava in their names (e.g. Aspava Park, Koç Aspava, Yıldız Aspava etc.)
+<pre><code> > db.ankara.aggregate( {$match : {"amenity":"restaurant"}} , {$group: { "_id":"$name" , "count":{$sum:1}}}, {$sort: {"count":-1}} )
+{ "_id" : null, "count" : 11 }
+{ "_id" : "Aspava", "count" : 3 }
+{ "_id" : "Uludağ", "count" : 2 }
+{ "_id" : "Aslı Börek", "count" : 2 }
+{ "_id" : "Çorbacım", "count" : 2 }
 
+> db.ankara.aggregate(  {$match: { $text : { $search:"aspava"}}}, {$group: {"_id": "$amenity" , "count": {$sum:1}}} )
+{ "_id" : "restaurant", "count" : 8 }      
+</pre></code>
+
+Similar to Aspava, Anadolu is a very common name in school names, especially in high schools names. Because Anadolu high schools are somewhat premiere schools.
+<pre><code> > db.ankara.find({ name:/Lise/}).count()
+94
+> db.ankara.aggregate(  {$match: { $text : { $search:"Anadolu"} , "amenity":"school"  }}, {$group: {"_id": "$amenity" , "count": {$sum:1}}}  )
+{ "_id" : "school", "count" : 33 }
+</pre></code>
 		</div>
 	</div>
 
