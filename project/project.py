@@ -47,16 +47,33 @@ counts = {}
 
 
 
-def extend_abbrevations(word):
-    
+def extend_abbrevations(address):
+    extended_address = ''
     abbrevations = { 'Cd.': 'Caddesi', 'Cad.':'Caddesi', 'Cd':'Caddesi', 'Sk.':'Sokak', 
-                    'Mah.':'Mahallesi', 'Blv.':'Bulvari', 'Bul.':'Bulvari'}   #u'Bulvar\u0131
-    for i in word.split():
+                    'Mah.':'Mahallesi', 'Blv.':u'Bulvar\u0131', 'Bul.':u'Bulvar\u0131'}
+    for word in address.split():
         try:
-            word = word.replace(i,abbrevations[i])
+            extended_address += abbrevations[word] + ' ' #check whether this word is an abbrevation 
+            # print "before cleaning: ", address, "\t after cleaning: ", extended_address
         except:
-            pass
-    return word
+            extended_address += word+ ' '
+    
+    return extended_address[:-1] #discard the last character, whitespace
+
+
+def extend_abbrevations_split_by_multiple(address):
+    extended_address = ''
+    abbrevations = { 'Cd.': 'Caddesi', 'Cad.':'Caddesi', 'Cd':'Caddesi', 'Sk.':'Sokak', 'Sok':'Sokak', 'Cad':'Caddesi',
+                    'Mah.':'Mahallesi', 'Mah':'Mahallesi', 'Blv.':u'Bulvar\u0131', 'Bul.':u'Bulvar\u0131', 'Bul':u'Bulvar\u0131'}
+    splitted_address = re.findall(r'[^,;\s.]+', address)
+    for word in splitted_address:
+        
+        try:
+            extended_address += abbrevations[word] + ' ' #check whether this word is an abbrevation 
+            # print "before cleaning: ", address, "\t after cleaning: ", extended_address
+        except:
+            extended_address += word+ ' '
+    return extended_address[:-1] #discard the last character, whitespace
 
 
 
@@ -68,6 +85,17 @@ def correct_postcode(postcode):  #postcodes must start with 06, and must be 5 di
         print 'postcode', postcode
         return None
     return postcode
+
+def capitalize_turkish_title(address):
+    capitalized_address = ''
+    connectors = ['ve', 'de', 'ile', 'ki', 'ya', 'ya da'] #this words should not be capitalized
+    for word in address.split():
+         
+        capitalized_address += word + ' ' if word in connectors else word.title()+' '
+    #if address.islower():
+    #    print 'before capitalization: ', address, '\t after capitalization: ', capitalized_address
+        
+    return capitalized_address[:-1]  #discard the last character, whitespace
     
 
 
@@ -134,9 +162,10 @@ def shape_element(element):
                     v = i.attrib['v']
 
                     if  length <= 2 and addr=='addr' and problemchars.match(v) == None:   
-                        if field == 'postcode':
+                        if field == 'postcode': 
                             v = correct_postcode(v)
-                        node.setdefault('address',{}).update({ field: extend_abbrevations(v).title()    }) 
+                        # node.setdefault('address',{}).update({ field: capitalize_turkish_title(extend_abbrevations(v))    }) 
+                        node.setdefault('address',{}).update({ field: capitalize_turkish_title(extend_abbrevations_split_by_multiple(v))    }) 
                 else:
                      
                     if i.attrib['k'] != 'type': #some entries have <tag k = "type" v=...>
