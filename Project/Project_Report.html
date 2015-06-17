@@ -85,7 +85,7 @@ print counts
 			  <dt> Postcodes</dt>
 			  <dd> All post codes should consist of exactly 5 digits, and should start with 06.</dd>
 			  <dt> Abbreviations</dt>
-			  <dd> Some place names are shorteneds <i>(e.g. 'Cad.', 'Cd', 'Sk.' for 'Caddesi'  and 'Sokak') </i>	</dd>
+			  <dd> Some place names are shortened <i>(e.g. 'Cad.', 'Cd', 'Sk.' for 'Caddesi'  and 'Sokak') </i>	</dd>
 			</dl> 
 		 
 
@@ -93,7 +93,7 @@ print counts
 <br/> 
 <h3> Capitalizations </h3>
 str.title() function solves the capitalization problem (line 140 in project.py). 
-If the address fields has some abbrevations, first abbrevations are extended, then title() function ensures that 
+If the address fields has some abbreviations, first abbreviations are extended, then title() function ensures that 
 the address names are properly capitalized. 
 
 <pre><code>   node.setdefault('address',{}).update({ field: capitalize_turkish_title(extend_abbrevations(v))    }) 
@@ -139,7 +139,7 @@ Note that I did not capitalize the place names, as some place use lowercase lett
 <br/> <br/>
 <h3> Postcodes </h3>
 <br/>
-Function correct_postcode is responsible for correcting poscodes (line 64 in <mark> project.py </mark>), which is given below:
+Function correct_postcode is responsible for correcting postcodes (line 64 in <mark> project.py </mark>), which is given below:
 
 <pre><code>def correct_postcode(postcode):  #postcodes must start with 06, and must be 5 digits long
     if len(postcode) != 5: # found short postcodes like 0600, 65 in the data
@@ -152,7 +152,7 @@ Function correct_postcode is responsible for correcting poscodes (line 64 in <ma
     
 </pre></code>
 <br/>
-An excerpt from this code for invalid posctodes are given.
+An excerpt from this code for invalid postcodes are given.
 <pre><code>postcode length is wrong 65
 postcode length is wrong 0600
 postcode length is wrong 0600
@@ -180,14 +180,14 @@ As the code shows all the postcodes in the database are in the range of (6000,69
 
 
 <h3> Abbrevations</h3>
-To extend abbrevations, I used the extend_abbrevations function (line 50 in <mark> project.py </mark>) : 
+To extend abbreviations, I used the extend_abbrevations function (line 50 in <mark> project.py </mark>) : 
 <pre><code class="python">def extend_abbrevations(address):
     extended_address = ''
     abbrevations = { 'Cd.': 'Caddesi', 'Cad.':'Caddesi', 'Cd':'Caddesi', 'Sk.':'Sokak', 
                     'Mah.':'Mahallesi', 'Blv.':u'Bulvar\u0131', 'Bul.':u'Bulvar\u0131'}
     for word in address.split():
         try:
-            extended_address += abbrevations[word] + ' ' #check whether this word is an abbrevation 
+            extended_address += abbrevations[word] + ' ' #check whether this word is an abbreviation 
             # print "before cleaning: ", address, "\t after cleaning: ", extended_address
         except:
             extended_address += word+ ' '
@@ -226,8 +226,8 @@ In addition, I also checked the database to see, if the values are cleaned as pl
 
 </pre></code>
 <br/>
-Even though all entries for "Blv." have been succesfully cleaned, there are small problems with "Cad.",  and "Sok.". Upon inspection, it is clear that 
-the punctuations such as '.' and ';' just before or after these identifiers prevents the extend abbrevations to work correctly. Thus, I had to modify extend_abbrevations 
+Even though all entries for "Blv." have been successfully cleaned, there are small problems with "Cad.",  and "Sok.". Upon inspection, it is clear that 
+the punctuations such as '.' and ';' just before or after these identifiers prevents the extend abbreviations to work correctly. Thus, I had to modify extend_abbrevations 
 functions to not only split by 'space' but also by 'dot', 'comma' and 'semi-colon'.
 
 to fix that I modified the function as below:
@@ -239,7 +239,7 @@ to fix that I modified the function as below:
     for word in splitted_address:
         
         try:
-            extended_address += abbrevations[word] + ' ' #check whether this word is an abbrevation 
+            extended_address += abbreviations[word] + ' ' #check whether this word is an abbreviation 
             # print "before cleaning: ", address, "\t after cleaning: ", extended_address
         except:
             extended_address += word+ ' '
@@ -297,7 +297,7 @@ This area is far from the city center, and not necessarily the densest district.
 { "_id" : "vignesh anand", "count" : 14187 }
 { "_id" : "SathyaV", "count" : 14114 }</pre></code>
   From these usernames only Nesim is a Turkish name. Vinoth, Vignesh, Summerson and Sathya are definetely not Turkish. Penom and katpatuka maybe nicknames, or non-Turkish names.
- 
+ This may suggest that Turkish people are reluctant to enter data. I will elaborate this point in the conclusion.
 
 <br/><br/>
 <h3>Ways with Highest Number of Nodes </h3>
@@ -379,7 +379,10 @@ has
 
 <div class='row'>
 		<div class="col-md-12"><br/>
-	<h2 align="center"> IV. Conclusion </h2>
+	<h2 align="center"> IV. Other Ideas </h2>
+
+
+	<h3>Problems</h3>
 
 	When I looked at this data, one thing about street names surprised me.  
 	I would like to present briefly some background information before explaining what surprised me.
@@ -393,14 +396,14 @@ has
     	<li>   Jingumae 4-15-3, Shibuya(district), Tokyo </li>
     </ul>
 
-		<p>For example, in USA, it is succint to describe an address by street (N Halsted) and number (1723).
+		<p>For example, in USA, it is succinct to describe an address by street (N Halsted) and number (1723).
 		In Turkey, there are streets and roads. Streets are long  and well known, roads are short and unremarkable. 
 		Thus, the address of a point is described by both street and road names most of the time. Because describing 
 		just by either one of them will have make them harder to find.</p>
 
 		<p>Thus, in data I was expecting in street field to have both road and street, but only a few entries have it.
 		I guess it is either because mostly foreigners entered it, or people who entered could not decide what to do.
-		As a result, in the "Most Popular Streets" query, I found some small roads (sokaks), nobody knows. 
+		As a result, in the "Most Popular Streets" query, top results are some small, insignificant roads. 
 		For example, I would surprise if somebody just uses Tutumlu Road and Ulubey Road alone, but both are just next to well known Baglar Street.
 		Thus, it would be probably more accurate if also the closest street  name were included (i.e. Baglar Street, Ulubey Road).
 		I heard that after foursquare started using OpenStreetMap, people started to complain about the new map, and I can understand why now.</p>
@@ -408,10 +411,35 @@ has
 		<p> The situation gets more interesting for Japan, where there are no streets. The address given tells that in Jingumae-4 region, look for block id 15 and building number 3.
 		So for Japan, how should be the street fields populated? Because 4-15-3 and 4-15-4 can be on same street, but 4-15-5 can be on another street.</p>
 
-		<p> The reason for discrepancies is because of the city plans. An optimized addressing city plan depends on the plan itself. In a grid-like American city, it is better to
-		use street and number system, where in Istanbul each street have lots of connecting roads. In Japan, there are roads as short as tens of meters. </p>
 
-		<p> I think solving this discrepancy can be an interesting challenge, and would surely improve OSM </p>.
+ <br/>
+ <h3>Improvement</h3>	
+	
+	  <div class="col-lg-8 pull-left"> 
+	 			
+	   The reason for discrepancies is variety in city plans. An optimized addressing city scheme depends on the city plan itself. In a grid-like American city, it is better to
+		use street and number system. On the other hand, in Turkey each street have lots of connecting roads. In Japan, there are roads as short as tens of meters. </p>
+
+
+	   <p> 	I propose a solution to this problem using grid based mapping, which is similar to Japanese addressing system. In the image right, New York City map is shown 
+	   (map source:<a href="https://www.etsy.com/listing/119087221/1944-new-york-city-manhattan-grid-map">etsy.com</a>). A coarse griding is illustrated for the sake of simplicity, where
+	   each point corresponds to a square of roughly 1 km by 1 km.</p>
+
+	  <p>  With this system places can give their address very briefly,
+	   such as New York Stack Exchange would be N5 or maybe N5 South. Basically a database that maps geo-coordinates to regions that can be described by a letter and a digit. 
+	   For New York, this might be unnecessary since it is addressing is very regular, but for other metropolitans that can be helpful for places to describe their addresses briefly.
+	   As a result, data entering will be much more consistent, and faster. 
+	</p>
+ 
+ 		<p>
+ 			Unlike New York, many cities in the world have irregularly named street names. As a result, I do not see a reason to use real street names. Also many people already have GPS capable smartphones. We should enter an address like "A23 Tokyo", and it should point a region that is, say 100 meters by 100 meters.
+ 				   Twenty years ago, people used to memorize phone numbers of friends, or carry phonebooks. Nowadays, leave alone friends, some people they do not know their own phone number. 
+ 		</p>
+
+	     </div>
+
+	      <div class="col-lg-4"> <img src="etc/drawing.jpg" class="img-rounded pull-left img-responsive"/>   </div>
+
 
 </div>
 </div>
