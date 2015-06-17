@@ -92,14 +92,14 @@ print counts
 
 <br/> 
 <h3> Capitalizations </h3>
-str.title() function solves the capitalization problem (line 140 in project.py). 
+str.title() function solves the capitalization problem. 
 If the address fields has some abbreviations, first abbreviations are extended, then title() function ensures that 
 the address names are properly capitalized. 
 
-<pre><code>   node.setdefault('address',{}).update({ field: capitalize_turkish_title(extend_abbrevations(v))    }) 
+<pre><code>   node.setdefault('address',{}).update({ field: capitalize_turkish_title(extend_abbreviations(v))    }) 
 </pre></code>
 <br/>
-However, since some words (i.e. connectors like 'and', 'or') should not be capitalized, I had to write a custom function like below.
+However, since some words (i.e. connectors like 'and', 'or') should not be capitalized, I had to write a custom function like below (line 92 in project.py):
 
 <pre><code>def capitalize_turkish_title(address):
     capitalized_address = ''
@@ -139,7 +139,7 @@ Note that I did not capitalize the place names, as some place use lowercase lett
 <br/> <br/>
 <h3> Postcodes </h3>
 <br/>
-Function correct_postcode is responsible for correcting postcodes (line 64 in <mark> project.py </mark>), which is given below:
+Function correct_postcode is responsible for correcting postcodes (line 83 in <mark> project.py </mark>), which is given below:
 
 <pre><code>def correct_postcode(postcode):  #postcodes must start with 06, and must be 5 digits long
     if len(postcode) != 5: # found short postcodes like 0600, 65 in the data
@@ -179,15 +179,15 @@ As the code shows all the postcodes in the database are in the range of (6000,69
 <br/><br/>
 
 
-<h3> Abbrevations</h3>
-To extend abbreviations, I used the extend_abbrevations function (line 50 in <mark> project.py </mark>) : 
-<pre><code class="python">def extend_abbrevations(address):
+<h3> abbreviations</h3>
+To extend abbreviations, I used the extend_abbreviations function (line 48 in <mark> project.py </mark>) : 
+<pre><code class="python">def extend_abbreviations(address):
     extended_address = ''
-    abbrevations = { 'Cd.': 'Caddesi', 'Cad.':'Caddesi', 'Cd':'Caddesi', 'Sk.':'Sokak', 
+    abbreviations = { 'Cd.': 'Caddesi', 'Cad.':'Caddesi', 'Cd':'Caddesi', 'Sk.':'Sokak', 
                     'Mah.':'Mahallesi', 'Blv.':u'Bulvar\u0131', 'Bul.':u'Bulvar\u0131'}
     for word in address.split():
         try:
-            extended_address += abbrevations[word] + ' ' #check whether this word is an abbreviation 
+            extended_address += abbreviations[word] + ' ' #check whether this word is an abbreviation 
             # print "before cleaning: ", address, "\t after cleaning: ", extended_address
         except:
             extended_address += word+ ' '
@@ -227,13 +227,13 @@ In addition, I also checked the database to see, if the values are cleaned as pl
 </pre></code>
 <br/>
 Even though all entries for "Blv." have been successfully cleaned, there are small problems with "Cad.",  and "Sok.". Upon inspection, it is clear that 
-the punctuations such as '.' and ';' just before or after these identifiers prevents the extend abbreviations to work correctly. Thus, I had to modify extend_abbrevations 
+the punctuations such as '.' and ';' just before or after these identifiers prevents the extend abbreviations to work correctly. Thus, I had to modify extend_abbreviations 
 functions to not only split by 'space' but also by 'dot', 'comma' and 'semi-colon'.
 
 to fix that I modified the function as below:
-<pre> <code>def extend_abbrevations_split_by_multiple(address):
+<pre> <code>def extend_abbreviations_split_by_multiple(address):
     extended_address = ''
-    abbrevations = { 'Cd.': 'Caddesi', 'Cad.':'Caddesi', 'Cd':'Caddesi', 'Sk.':'Sokak', 
+    abbreviations = { 'Cd.': 'Caddesi', 'Cad.':'Caddesi', 'Cd':'Caddesi', 'Sk.':'Sokak', 
                     'Mah.':'Mahallesi', 'Blv.':u'Bulvar\u0131', 'Bul.':u'Bulvar\u0131'}
     splitted_address = re.findall(r'[^,;\s]+', address)
     for word in splitted_address:

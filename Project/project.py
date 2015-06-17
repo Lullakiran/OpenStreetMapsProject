@@ -45,14 +45,14 @@ counts = {}
 # print counts
 
 
-def extend_abbrevations(address):
+def extend_abbreviations(address):
     extended_address = ''
-    abbrevations = {
+    abbreviations = {
         'Cd.': 'Caddesi', 'Cad.': 'Caddesi', 'Cd': 'Caddesi', 'Sk.': 'Sokak',
                     'Mah.': 'Mahallesi', 'Blv.': u'Bulvar\u0131', 'Bul.': u'Bulvar\u0131'}
     for word in address.split():
         try:
-            extended_address += abbrevations[
+            extended_address += abbreviations[
                 word] + ' '  # check whether this word is an abbrevation
             # print "before cleaning: ", address, "\t after cleaning: ",
             # extended_address
@@ -62,16 +62,16 @@ def extend_abbrevations(address):
     return extended_address[:-1]  # discard the last character, whitespace
 
 
-def extend_abbrevations_split_by_multiple(address):
+def extend_abbreviations_split_by_multiple(address):
     extended_address = ''
-    abbrevations = {
+    abbreviations = {
         'Cd.': 'Caddesi', 'Cad.': 'Caddesi', 'Cd': 'Caddesi', 'Sk.': 'Sokak', 'Sok': 'Sokak', 'Cad': 'Caddesi',
                     'Mah.': 'Mahallesi', 'Mah': 'Mahallesi', 'Blv.': u'Bulvar\u0131', 'Bul.': u'Bulvar\u0131', 'Bul': u'Bulvar\u0131'}
     splitted_address = re.findall(r'[^,;\s.]+', address)
     for word in splitted_address:
 
         try:
-            extended_address += abbrevations[
+            extended_address += abbreviations[
                 word] + ' '  # check whether this word is an abbrevation
             # print "before cleaning: ", address, "\t after cleaning: ",
             # extended_address
@@ -173,10 +173,10 @@ def shape_element(element):
                         if field == 'postcode':
                             v = correct_postcode(v)
                         # node.setdefault('address',{}).update({ field:
-                        # capitalize_turkish_title(extend_abbrevations(v))
+                        # capitalize_turkish_title(extend_abbreviations(v))
                         # })
                         node.setdefault('address', {}).update(
-                            {field: capitalize_turkish_title(extend_abbrevations_split_by_multiple(v))})
+                            {field: capitalize_turkish_title(extend_abbreviations_split_by_multiple(v))})
                 else:
 
                     if i.attrib['k'] != 'type':  # some entries have <tag k = "type" v=...>
